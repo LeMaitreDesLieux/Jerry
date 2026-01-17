@@ -4,157 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jerry | Maroc Endurant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --slate-blue: #2C3E50;
             --burnt-orange: #D35400;
-            --sand-beige: #FDFBF7;
+            /* Couleur ajustée pour matcher le fond de ton logo */
+            --sand-beige: #ebe4d1; 
             --text-dark: #1A1A1A;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--sand-beige); color: var(--text-dark); line-height: 1.6; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--sand-beige); 
+            color: var(--text-dark); 
+            line-height: 1.5; 
+            -webkit-font-smoothing: antialiased;
+        }
         
-        header { padding: 30px 20px; text-align: center; }
+        header { padding: 40px 20px 20px 20px; text-align: center; }
         
-        /* Style du Logo */
         .logo-img {
-            height: 120px; /* Ajuste la taille selon tes besoins */
-            width: auto;
+            width: 100%;
+            max-width: 280px; /* Taille optimisée pour mobile */
+            height: auto;
             display: block;
             margin: 0 auto;
+            /* Filtre léger pour harmoniser si besoin */
+            mix-blend-mode: multiply; 
         }
 
-        .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 0 24px 60px 24px; }
 
-        /* Section Vidéo avec rappel du logo */
         .video-container {
             width: 100%;
             aspect-ratio: 16 / 9;
             background: #000;
-            border-radius: 20px;
-            margin-bottom: 40px;
+            border-radius: 24px;
+            margin: 20px 0 40px 0;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 15px 40px rgba(44, 62, 80, 0.2);
-            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
+        
         .video-placeholder {
             width: 100%; height: 100%;
-            /* Image d'ambiance rappelant les montagnes du logo */
-            background: linear-gradient(rgba(44, 62, 80, 0.5), rgba(44, 62, 80, 0.3)), url('https://images.unsplash.com/photo-1548588627-f9785020feec?auto=format&fit=crop&w=800&q=80');
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1548588627-f9785020feec?auto=format&fit=crop&w=800&q=80');
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .play-button {
-            width: 80px; height: 80px;
+            width: 72px; height: 72px;
             background: var(--burnt-orange);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s, background-color 0.3s;
-            box-shadow: 0 0 20px rgba(211, 84, 0, 0.4);
+            box-shadow: 0 8px 20px rgba(211, 84, 0, 0.3);
         }
-        .play-button::after {
-            content: ""; display: block;
-            border-style: solid; border-width: 12px 0 12px 22px;
-            border-color: transparent transparent transparent white;
-            margin-left: 6px;
-        }
-        .video-container:hover .play-button { transform: scale(1.1); background-color: #e67e22; }
-
-        h1 { font-size: 2.2rem; color: var(--slate-blue); text-align: center; margin-bottom: 30px; line-height: 1.2; font-weight: 800; }
-
-        /* Card Style */
-        .card { background: white; border-radius: 25px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid rgba(44, 62, 80, 0.05); }
-        .card-header { text-align: center; margin-bottom: 25px; }
-        .badge { background: var(--burnt-orange); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
         
-        form { display: flex; flex-direction: column; gap: 15px; }
-        input { padding: 16px; border: 1px solid #F0F0F0; border-radius: 12px; font-size: 1rem; background-color: #FAFAFA; }
-        button { background: var(--slate-blue); color: white; padding: 18px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
-        button:hover { background: #1a252f; }
+        .play-button::after {
+            content: ""; border-style: solid; border-width: 10px 0 10px 18px;
+            border-color: transparent transparent transparent white;
+            margin-left: 4px;
+        }
 
-        /* WhatsApp Section */
+        h1 { 
+            font-size: 2.4rem; 
+            color: var(--slate-blue); 
+            text-align: center; 
+            margin-bottom: 35px; 
+            line-height: 1.1; 
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .card { 
+            background: white; 
+            border-radius: 28px; 
+            padding: 35px 25px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04); 
+            margin-bottom: 30px; 
+        }
+
+        input { 
+            width: 100%;
+            padding: 18px; 
+            border: 1px solid #F0F0F0; 
+            border-radius: 16px; 
+            font-size: 1rem; 
+            margin-bottom: 12px;
+            background: #F9F9F9;
+        }
+
+        button { 
+            width: 100%;
+            background: var(--slate-blue); 
+            color: white; 
+            padding: 18px; 
+            border: none; 
+            border-radius: 16px; 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+        }
+
         .whatsapp-block {
-            background: #F1F8E9;
-            border: 2px dashed #A5D6A7;
-            border-radius: 25px;
+            background: #f0f7f0;
+            border-radius: 28px;
             padding: 30px;
             text-align: center;
-            margin-bottom: 50px;
         }
-        .whatsapp-block h3 { color: #2E7D32; margin-bottom: 12px; font-size: 1.4rem; }
+
         .whatsapp-btn {
             display: inline-block;
             background: #25D366;
             color: white;
-            padding: 14px 30px;
-            border-radius: 50px;
+            padding: 16px 32px;
+            border-radius: 100px;
             text-decoration: none;
             font-weight: 700;
             margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
 
-        footer { text-align: center; padding: 40px; font-size: 0.85rem; color: var(--slate-blue); opacity: 0.7; }
+        footer { text-align: center; padding: 40px; font-size: 0.8rem; opacity: 0.6; }
 
         @media (min-width: 768px) {
-            h1 { font-size: 3.2rem; }
-            .container { padding: 40px; }
+            h1 { font-size: 3.5rem; }
         }
     </style>
 </head>
 <body>
-
     <header>
-        <img src="logo-jerry.jpg" alt="Jerry Maroc Endurant" class="logo-img">
+        <img src="25240.jpg" alt="Jerry Maroc Endurant" class="logo-img">
     </header>
 
     <div class="container">
-        
         <div class="video-container">
-            <div class="video-placeholder">
-                <div class="play-button"></div>
-            </div>
+            <div class="video-placeholder"><div class="play-button"></div></div>
         </div>
 
         <h1>Reprenez votre place.<br>Devenez Endurant.</h1>
 
         <div class="card">
-            <div class="card-header">
-                <span class="badge">OFFERT</span>
-                <h2 style="margin-top:15px; color: var(--slate-blue);">Le Guide "Jerry Départ"</h2>
-                <p style="font-size: 0.95rem; color: #666; margin-top: 10px;">Les 5 clés médicales et terrain pour courir au Maroc.</p>
-            </div>
             <form>
                 <input type="text" placeholder="Ton Prénom" required>
-                <input type="email" placeholder="Ton adresse Email" required>
-                <button type="submit">Recevoir mon guide PDF</button>
+                <input type="email" placeholder="Ton Email" required>
+                <button type="submit">Recevoir le Guide PDF</button>
             </form>
         </div>
 
         <div class="whatsapp-block">
-            <h3>💬 La Meute Jerry</h3>
-            <p style="font-size: 1rem; color: #388E3C;">
-                Rejoignez notre communauté WhatsApp pour progresser ensemble :
-                <br>• Conseils flash & Motivation
-                <br>• Meilleurs parcours de la semaine
-                <br>• Échanges directs avec les coachs
-            </p>
-            <a href="#" class="whatsapp-btn">Rejoindre le groupe WhatsApp</a>
+            <h3 style="color: #2E7D32">💬 La Meute Jerry</h3>
+            <p style="margin-top:10px; font-size: 0.95rem">Conseils flash, motivation et les meilleurs parcours du Maroc.</p>
+            <a href="#" class="whatsapp-btn">Rejoindre le groupe</a>
         </div>
 
         <footer>
             <p>© 2026 JERRY | MAROC ENDURANT</p>
-            <p>Expertise • Terrain • Communauté</p>
         </footer>
     </div>
-
 </body>
 </html>
