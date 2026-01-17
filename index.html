@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jerry | Maroc Endurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --slate-blue: #2C3E50;
+            --burnt-orange: #D35400;
+            --sand-beige: #FDFBF7;
+            --text-dark: #1A1A1A;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--sand-beige); color: var(--text-dark); line-height: 1.6; }
+        
+        header { padding: 30px 20px; text-align: center; }
+        
+        /* Style du Logo */
+        .logo-img {
+            height: 120px; /* Ajuste la taille selon tes besoins */
+            width: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+
+        /* Section Vidéo avec rappel du logo */
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(44, 62, 80, 0.2);
+            cursor: pointer;
+        }
+        .video-placeholder {
+            width: 100%; height: 100%;
+            /* Image d'ambiance rappelant les montagnes du logo */
+            background: linear-gradient(rgba(44, 62, 80, 0.5), rgba(44, 62, 80, 0.3)), url('https://images.unsplash.com/photo-1548588627-f9785020feec?auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .play-button {
+            width: 80px; height: 80px;
+            background: var(--burnt-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s, background-color 0.3s;
+            box-shadow: 0 0 20px rgba(211, 84, 0, 0.4);
+        }
+        .play-button::after {
+            content: ""; display: block;
+            border-style: solid; border-width: 12px 0 12px 22px;
+            border-color: transparent transparent transparent white;
+            margin-left: 6px;
+        }
+        .video-container:hover .play-button { transform: scale(1.1); background-color: #e67e22; }
+
+        h1 { font-size: 2.2rem; color: var(--slate-blue); text-align: center; margin-bottom: 30px; line-height: 1.2; font-weight: 800; }
+
+        /* Card Style */
+        .card { background: white; border-radius: 25px; padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid rgba(44, 62, 80, 0.05); }
+        .card-header { text-align: center; margin-bottom: 25px; }
+        .badge { background: var(--burnt-orange); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
+        
+        form { display: flex; flex-direction: column; gap: 15px; }
+        input { padding: 16px; border: 1px solid #F0F0F0; border-radius: 12px; font-size: 1rem; background-color: #FAFAFA; }
+        button { background: var(--slate-blue); color: white; padding: 18px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #1a252f; }
+
+        /* WhatsApp Section */
+        .whatsapp-block {
+            background: #F1F8E9;
+            border: 2px dashed #A5D6A7;
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .whatsapp-block h3 { color: #2E7D32; margin-bottom: 12px; font-size: 1.4rem; }
+        .whatsapp-btn {
+            display: inline-block;
+            background: #25D366;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        footer { text-align: center; padding: 40px; font-size: 0.85rem; color: var(--slate-blue); opacity: 0.7; }
+
+        @media (min-width: 768px) {
+            h1 { font-size: 3.2rem; }
+            .container { padding: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logo-jerry.jpg" alt="Jerry Maroc Endurant" class="logo-img">
+    </header>
+
+    <div class="container">
+        
+        <div class="video-container">
+            <div class="video-placeholder">
+                <div class="play-button"></div>
+            </div>
+        </div>
+
+        <h1>Reprenez votre place.<br>Devenez Endurant.</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">OFFERT</span>
+                <h2 style="margin-top:15px; color: var(--slate-blue);">Le Guide "Jerry Départ"</h2>
+                <p style="font-size: 0.95rem; color: #666; margin-top: 10px;">Les 5 clés médicales et terrain pour courir au Maroc.</p>
+            </div>
+            <form>
+                <input type="text" placeholder="Ton Prénom" required>
+                <input type="email" placeholder="Ton adresse Email" required>
+                <button type="submit">Recevoir mon guide PDF</button>
+            </form>
+        </div>
+
+        <div class="whatsapp-block">
+            <h3>💬 La Meute Jerry</h3>
+            <p style="font-size: 1rem; color: #388E3C;">
+                Rejoignez notre communauté WhatsApp pour progresser ensemble :
+                <br>• Conseils flash & Motivation
+                <br>• Meilleurs parcours de la semaine
+                <br>• Échanges directs avec les coachs
+            </p>
+            <a href="#" class="whatsapp-btn">Rejoindre le groupe WhatsApp</a>
+        </div>
+
+        <footer>
+            <p>© 2026 JERRY | MAROC ENDURANT</p>
+            <p>Expertise • Terrain • Communauté</p>
+        </footer>
+    </div>
+
+</body>
+</html>
