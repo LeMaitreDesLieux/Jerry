@@ -9,7 +9,7 @@
         :root {
             --slate-blue: #2C3E50;
             --burnt-orange: #D35400;
-            /* Couleur ajustée pour matcher le fond de ton logo */
+            /* Cette couleur correspond exactement au fond de ton image JPG */
             --sand-beige: #ebe4d1; 
             --text-dark: #1A1A1A;
         }
@@ -19,20 +19,17 @@
             font-family: 'Inter', sans-serif; 
             background-color: var(--sand-beige); 
             color: var(--text-dark); 
-            line-height: 1.5; 
-            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
         }
         
-        header { padding: 40px 20px 20px 20px; text-align: center; }
+        header { padding: 40px 20px 10px 20px; text-align: center; }
         
         .logo-img {
             width: 100%;
-            max-width: 280px; /* Taille optimisée pour mobile */
+            max-width: 300px;
             height: auto;
             display: block;
             margin: 0 auto;
-            /* Filtre léger pour harmoniser si besoin */
-            mix-blend-mode: multiply; 
         }
 
         .container { max-width: 600px; margin: 0 auto; padding: 0 24px 60px 24px; }
@@ -53,19 +50,14 @@
             background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1548588627-f9785020feec?auto=format&fit=crop&w=800&q=80');
             background-size: cover;
             background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .play-button {
             width: 72px; height: 72px;
             background: var(--burnt-orange);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(211, 84, 0, 0.3);
+            display: flex; align-items: center; justify-content: center;
         }
         
         .play-button::after {
@@ -75,19 +67,18 @@
         }
 
         h1 { 
-            font-size: 2.4rem; 
+            font-size: 2.2rem; 
             color: var(--slate-blue); 
             text-align: center; 
             margin-bottom: 35px; 
             line-height: 1.1; 
             font-weight: 900;
-            letter-spacing: -1px;
         }
 
         .card { 
             background: white; 
             border-radius: 28px; 
-            padding: 35px 25px; 
+            padding: 30px 20px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.04); 
             margin-bottom: 30px; 
         }
@@ -132,10 +123,6 @@
         }
 
         footer { text-align: center; padding: 40px; font-size: 0.8rem; opacity: 0.6; }
-
-        @media (min-width: 768px) {
-            h1 { font-size: 3.5rem; }
-        }
     </style>
 </head>
 <body>
