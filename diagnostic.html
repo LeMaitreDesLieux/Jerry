@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Bilan Bio-Performance | Jerry.ma</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --slate-blue: #2C3E50;
+            --burnt-orange: #D35400;
+            --sand-beige: #ebe4d1; 
+            --white: #ffffff;
+            --whatsapp-green: #25D366;
+            --gray-bg: #f8f6f0;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--sand-beige);
+            color: var(--slate-blue);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .card {
+            background: var(--white);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 40px;
+            padding: 45px 30px 30px;
+            box-shadow: 0 30px 60px rgba(44, 62, 80, 0.15);
+            position: relative;
+            min-height: 540px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PROGRESSION --- */
+        .progress-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 8px;
+            background: #eee; border-radius: 40px 40px 0 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: var(--burnt-orange);
+            width: 11%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- ÉTAPES --- */
+        .step { display: none; flex-direction: column; flex-grow: 1; }
+        .step.active { display: flex; animation: slideIn 0.4s ease-out; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header { margin-bottom: 25px; }
+        .step-tag { color: var(--burnt-orange); font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; display: block; }
+        h2 { font-weight: 900; font-size: 1.6rem; margin: 0; line-height: 1.2; letter-spacing: -0.5px; }
+        .helper { font-size: 0.9rem; opacity: 0.6; margin-top: 10px; line-height: 1.4; display: block; }
+
+        /* --- OPTIONS SELECTION --- */
+        .options-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .opt-btn {
+            background: var(--gray-bg);
+            padding: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .opt-btn:hover { background: #eeeae0; }
+        .opt-btn.selected { border-color: var(--burnt-orange); background: white; color: var(--burnt-orange); box-shadow: 0 8px 16px rgba(211, 84, 0, 0.1); }
+
+        /* --- INPUTS NUMÉRIQUES (Centrés & Gros) --- */
+        .input-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .big-input-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="number"] {
+            width: 180px;
+            height: 100px;
+            background: var(--gray-bg);
+            border: 4px solid #eee;
+            border-radius: 30px;
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--slate-blue);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        input[type="number"]:focus {
+            background: white;
+            border-color: var(--burnt-orange);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .unit-label {
+            margin-top: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--burnt-orange);
+            font-size: 1.1rem;
+        }
+
+        /* --- CHECKBOXES (Symptômes) --- */
+        .check-list { display: flex; flex-direction: column; gap: 10px; }
+        .check-item {
+            display: flex; align-items: center; gap: 15px;
+            background: var(--gray-bg); padding: 18px; border-radius: 18px;
+            cursor: pointer; font-weight: 700; font-size: 0.95rem; border: 2px solid transparent;
+        }
+        .check-item input { width: 22px; height: 22px; accent-color: var(--burnt-orange); }
+        .check-item.active { border-color: var(--burnt-orange); background: white; color: var(--burnt-orange); }
+
+        /* --- NAVIGATION --- */
+        .footer-nav { margin-top: auto; display: flex; gap: 12px; padding-top: 30px; }
+        .btn {
+            flex: 1; padding: 22px; border-radius: 22px; border: none;
+            font-weight: 900; text-transform: uppercase; font-family: inherit;
+            cursor: pointer; transition: 0.3s; font-size: 0.9rem; letter-spacing: 1px;
+        }
+        .btn-next { background: var(--slate-blue); color: white; }
+        .btn-next:disabled { opacity: 0.2; cursor: not-allowed; }
+        .btn-prev { background: #f0ede4; color: #888; flex: 0.4; font-size: 0.75rem; }
+        .btn-send { background: var(--whatsapp-green); color: white; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); }
+
+        /* Cache les flèches */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="progress-container"><div id="p-bar" class="progress-fill"></div></div>
+
+    <form id="mainForm">
+        <!-- 1. SEXE -->
+        <div class="step active" id="s1">
+            <span class="step-tag">Profil 1/4</span>
+            <h2>Quel est votre sexe biologique ?</h2>
+            <span class="helper">Nécessaire pour les besoins en fer et créatine.</span>
+            <div class="options-list">
+                <div class="opt-btn" onclick="handleSelect('sexe', 'Homme', this)">♂️ Homme</div>
+                <div class="opt-btn" onclick="handleSelect('sexe', 'Femme', this)">♀️ Femme</div>
+            </div>
+        </div>
+
+        <!-- 2. POIDS -->
+        <div class="step" id="s2">
+            <span class="step-tag">Profil 1/4</span>
+            <h2>Quel est votre poids actuel ?</h2>
+            <div class="input-container">
+                <div class="big-input-wrapper">
+                    <input type="number" id="poids" placeholder="00" oninput="validate()">
+                    <span class="unit-label">Kilos (KG)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RÉGIME -->
+        <div class="step" id="s3">
+            <span class="step-tag">Alimentation 2/4</span>
+            <h2>Votre régime alimentaire ?</h2>
+            <div class="options-list">
+                <div class="opt-btn" onclick="handleSelect('regime', 'Omnivore', this)">🥩 Omnivore</div>
+                <div class="opt-btn" onclick="handleSelect('regime', 'Végétarien', this)">🥗 Végétarien</div>
+                <div class="opt-btn" onclick="handleSelect('regime', 'Végétalien', this)">🌱 Végétalien (Vegan)</div>
+            </div>
+        </div>
+
+        <!-- 4. CAFÉINE -->
+        <div class="step" id="s4">
+            <span class="step-tag">Alimentation 2/4</span>
+            <h2>Consommation de caféine ?</h2>
+            <div class="options-list">
+                <div class="opt-btn" onclick="handleSelect('cafe', 'Aucune', this)">☕ Pas de caféine</div>
+                <div class="opt-btn" onclick="handleSelect('cafe', '1-2 tasses', this)">☕ 1 à 2 tasses / jour</div>
+                <div class="opt-btn" onclick="handleSelect('cafe', '3+ tasses', this)">☕ 3 tasses ou plus</div>
+            </div>
+        </div>
+
+        <!-- 5. VOLUME -->
+        <div class="step" id="s5">
+            <span class="step-tag">Effort 3/4</span>
+            <h2>Volume hebdomadaire ?</h2>
+            <span class="helper">Moyenne kilométrique des 4 dernières semaines.</span>
+            <div class="input-container">
+                <div class="big-input-wrapper">
+                    <input type="number" id="volume" placeholder="00" oninput="validate()">
+                    <span class="unit-label">Kilomètres / sem</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. VMA / INTENSITÉ -->
+        <div class="step" id="s6">
+            <span class="step-tag">Effort 3/4</span>
+            <h2>Séance VMA / Intensité ?</h2>
+            <span class="helper">Pratiquez-vous du fractionné au moins une fois par semaine ?</span>
+            <div class="options-list">
+                <div class="opt-btn" onclick="handleSelect('vma', 'Oui', this)">✅ Oui, au moins une</div>
+                <div class="opt-btn" onclick="handleSelect('vma', 'Non', this)">❌ Non</div>
+            </div>
+        </div>
+
+        <!-- 7. DÉNIVELÉ -->
+        <div class="step" id="s7">
+            <span class="step-tag">Effort 3/4</span>
+            <h2>Dénivelé positif (D+) / sem ?</h2>
+            <div class="options-list">
+                <div class="opt-btn" onclick="handleSelect('dplus', 'Faible (<200m)', this)">📉 Faible (<200m)</div>
+                <div class="opt-btn" onclick="handleSelect('dplus', 'Modéré (200-800m)', this)">🏔️ Modéré (200-800m)</div>
+                <div class="opt-btn" onclick="handleSelect('dplus', 'Élevé (>800m)', this)">⛰️ Élevé (>800m)</div>
+            </div>
+        </div>
+
+        <!-- 8. SIGNAUX -->
+        <div class="step" id="s8">
+            <span class="step-tag">Signaux 4/4</span>
+            <h2>Ressentez-vous ces signes ?</h2>
+            <div class="check-list">
+                <label class="check-item" onclick="handleCheck(this)"><input type="checkbox" name="sym" value="Fatigue"> Fatigue / Somnolence</label>
+                <label class="check-item" onclick="handleCheck(this)"><input type="checkbox" name="sym" value="Crampes"> Crampes / Tressautements</label>
+                <label class="check-item" onclick="handleCheck(this)"><input type="checkbox" name="sym" value="Articulations"> Douleurs Tendons/Articulations</label>
+                <label class="check-item" onclick="handleCheck(this)"><input type="checkbox" name="sym" value="Digestion"> Troubles digestifs effort</label>
+                <label class="check-item" onclick="handleCheck(this)"><input type="checkbox" name="sym" value="Aucun"> Aucun signal particulier</label>
+            </div>
+        </div>
+
+        <!-- 9. OBJECTIF -->
+        <div class="step" id="s9">
+            <span class="step-tag">Objectif 4/4</span>
+            <h2>Votre priorité absolue ?</h2>
+            <div class="options-list">
+                <div class="opt-btn" onclick="handleSelect('obj', 'Performance', this)">⚡ Performance / Vitesse</div>
+                <div class="opt-btn" onclick="handleSelect('obj', 'Endurance', this)">🏃 Endurance / Distance</div>
+                <div class="opt-btn" onclick="handleSelect('obj', 'Récupération', this)">🧘 Récupération</div>
+                <div class="opt-btn" onclick="handleSelect('obj', 'Santé', this)">🛡️ Santé & Longévité</div>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="footer-nav">
+            <button type="button" class="btn btn-prev" id="prevBtn" style="display:none" onclick="nav(-1)">Précédent</button>
+            <button type="button" class="btn btn-next" id="nextBtn" disabled onclick="nav(1)">Suivant</button>
+            <button type="button" class="btn btn-send" id="sendBtn" style="display:none" onclick="finish()">Finaliser mon Bilan ➔</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let step = 1;
+    let store = {};
+
+    function handleSelect(k, v, el) {
+        store[k] = v;
+        const siblings = el.parentElement.querySelectorAll('.opt-btn');
+        siblings.forEach(s => s.classList.remove('selected'));
+        el.classList.add('selected');
+        validate();
+        // Délai pour laisser l'utilisateur voir son choix avant de passer automatiquement
+        setTimeout(() => { if(step < 9) nav(1); }, 350);
+    }
+
+    function handleCheck(el) {
+        // Le clic sur le label gère déjà le checkbox, on gère juste le style et la validation
+        setTimeout(() => {
+            const cb = el.querySelector('input');
+            el.classList.toggle('active', cb.checked);
+            validate();
+        }, 50);
+    }
+
+    function validate() {
+        let isValid = false;
+        if (step === 1) isValid = !!store.sexe;
+        if (step === 2) isValid = document.getElementById('poids').value > 30;
+        if (step === 3) isValid = !!store.regime;
+        if (step === 4) isValid = !!store.cafe;
+        if (step === 5) isValid = document.getElementById('volume').value !== "";
+        if (step === 6) isValid = !!store.vma;
+        if (step === 7) isValid = !!store.dplus;
+        if (step === 8) isValid = document.querySelectorAll('input[name="sym"]:checked').length > 0;
+        if (step === 9) isValid = !!store.obj;
+
+        document.getElementById('nextBtn').disabled = !isValid;
+        document.getElementById('sendBtn').disabled = !isValid;
+    }
+
+    function nav(n) {
+        // Masquer l'étape actuelle
+        document.getElementById('s' + step).classList.remove('active');
+        step += n;
+        // Afficher la nouvelle étape
+        document.getElementById('s' + step).classList.add('active');
+
+        // Mise à jour de l'UI
+        document.getElementById('p-bar').style.width = (step / 9 * 100) + '%';
+        document.getElementById('prevBtn').style.display = (step > 1) ? 'block' : 'none';
+        document.getElementById('nextBtn').style.display = (step < 9) ? 'block' : 'none';
+        document.getElementById('sendBtn').style.display = (step === 9) ? 'block' : 'none';
+
+        validate();
+    }
+
+    function finish() {
+        const syms = [];
+        document.querySelectorAll('input[name="sym"]:checked').forEach(c => syms.push(c.value));
+        
+        const message = `BILAN BIO-PERFORMANCE\n` +
+                        `--------------------------\n` +
+                        `• Sexe: ${store.sexe}\n` +
+                        `• Poids: ${document.getElementById('poids').value} kg\n` +
+                        `• Régime: ${store.regime}\n` +
+                        `• Caféine: ${store.cafe}\n` +
+                        `• Volume: ${document.getElementById('volume').value} km/sem\n` +
+                        `• Intensité/VMA: ${store.vma}\n` +
+                        `• D+ hebdomadaire: ${store.dplus}\n` +
+                        `• Signaux: ${syms.join(', ')}\n` +
+                        `• Objectif: ${store.obj}\n` +
+                        `--------------------------\n` +
+                        `Merci de me transmettre mon analyse experte Jerry !`;
+
+        window.location.href = `https://wa.me/33651452360?text=${encodeURIComponent(message)}`;
+    }
+</script>
+
+</body>
+</html>
