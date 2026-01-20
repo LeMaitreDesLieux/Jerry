@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Jerry | La Meute</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Récupération automatique de la configuration de l'environnement
+        // Note : Sur GitHub Pages, il faudra remplacer JSON.parse(__firebase_config) par votre objet config réel.
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        const leadsContainer = document.getElementById('leads-list');
+        const statsCount = document.getElementById('stats-count');
+
+        // Authentification initiale requise pour Firestore
+        const initAuth = async () => {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+        };
+
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Écoute en temps réel de la collection 'leads'
+                const q = collection(db, 'artifacts', appId, 'public', 'data', 'leads');
+                
+                onSnapshot(q, (snapshot) => {
+                    leadsContainer.innerHTML = '';
+                    statsCount.innerText = snapshot.size;
+                    
+                    if (snapshot.empty) {
+                        leadsContainer.innerHTML = '<p style="text-align: center; grid-column: 1/-1; opacity: 0.5; padding: 40px;">Aucun loup n\'a encore rejoint la meute.</p>';
+                        return;
+                    }
+
+                    const docs = [];
+                    snapshot.forEach(doc => docs.push({id: doc.id, ...doc.data()}));
+                    
+                    // Tri manuel par date (les plus récents en premier)
+                    docs.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+                    docs.forEach(lead => {
+                        const date = lead.timestamp ? new Date(lead.timestamp.seconds * 1000).toLocaleDateString('fr-FR', {
+                            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                        }) : 'À l\'instant';
+                        
+                        const card = document.createElement('div');
+                        card.className = 'lead-card';
+                        card.innerHTML = `
+                            <div class="lead-header">
+                                <span class="lead-date">${date}</span>
+                                <span class="lead-obj">${lead.objectif || 'Performance'}</span>
+                            </div>
+                            <div class="lead-body">
+                                <p><strong>👤 Profil :</strong> ${lead.sexe || 'NC'}, ${lead.poids || '??'}kg</p>
+                                <p><strong>🏃 Effort :</strong> ${lead.volume || '0'}km/sem, VMA: ${lead.vma || '??'}</p>
+                                <p><strong>🏔️ Terrain :</strong> D+ ${lead.denivele || 'NC'}</p>
+                                <p><strong>⚠️ Signaux :</strong> ${Array.isArray(lead.symptomes) ? lead.symptomes.join(', ') : (lead.symptomes || 'Rien')}</p>
+                            </div>
+                            <a href="https://wa.me/${(lead.whatsapp || '').replace(/\s/g, '')}" target="_blank" class="wa-link">
+                                Contacter sur WhatsApp (${lead.whatsapp || 'Pas de numéro'})
+                            </a>
+                        `;
+                        leadsContainer.appendChild(card);
+                    });
+                }, (error) => {
+                    console.error("Erreur Firestore:", error);
+                    leadsContainer.innerHTML = `<p style="color:red; text-align:center; padding:20px;">Erreur d'accès aux données. Vérifiez la console.</p>`;
+                });
+            }
+        });
+    </script>
+
+    <style>
+        :root {
+            --slate-blue: #2C3E50;
+            --burnt-orange: #D35400;
+            --sand-beige: #ebe4d1; 
+            --white: #ffffff;
+            --whatsapp-green: #25D366;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--sand-beige);
+            color: var(--slate-blue);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .dashboard {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--white);
+            padding: 25px 35px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(44, 62, 80, 0.05);
+        }
+
+        h1 { font-weight: 900; margin: 0; font-size: 1.6rem; letter-spacing: -0.5px; }
+        .stats { font-weight: 900; background: var(--burnt-orange); color: white; padding: 8px 20px; border-radius: 100px; font-size: 0.9rem; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .lead-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(44, 62, 80, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .lead-card:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--burnt-orange);
+            box-shadow: 0 20px 50px rgba(211, 84, 0, 0.12);
+        }
+
+        .lead-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--sand-beige);
+            padding-bottom: 12px;
+        }
+
+        .lead-date { font-size: 0.75rem; font-weight: 800; opacity: 0.5; text-transform: uppercase; }
+        .lead-obj { font-size: 0.7rem; font-weight: 900; color: var(--burnt-orange); text-transform: uppercase; letter-spacing: 1px; }
+
+        .lead-body p { margin: 10px 0; font-size: 0.95rem; font-weight: 700; line-height: 1.5; color: var(--slate-blue); }
+        .lead-body strong { opacity: 0.6; font-size: 0.8rem; display: inline-block; width: 85px; text-transform: uppercase; }
+
+        .wa-link {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--whatsapp-green);
+            color: white;
+            text-decoration: none;
+            padding: 18px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            margin-top: 25px;
+        }
+
+        .wa-link:hover { background: #1eb954; }
+
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 15px; text-align: center; padding: 20px; }
+            h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <header>
+            <h1>🐺 Jerry HQ : La Meute</h1>
+            <div class="stats"><span id="stats-count">0</span> Leads</div>
+        </header>
+
+        <div id="leads-list" class="grid">
+            <p style="text-align: center; grid-column: 1/-1; opacity: 0.5; padding: 50px;">
+                Initialisation de la connexion sécurisée...
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>
