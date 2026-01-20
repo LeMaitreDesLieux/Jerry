@@ -6,39 +6,6 @@
     <title>Bilan Bio-Performance | Jerry.ma</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK (Base de données) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Configuration injectée par l'environnement
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        // Authentification initiale (RULE 3)
-        const initAuth = async () => {
-          try {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-              await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-              await signInAnonymously(auth);
-            }
-          } catch (e) {
-            console.error("Échec de l'authentification:", e);
-          }
-        };
-        initAuth();
-
-        // On expose les services pour les fonctions globales
-        window.db = db;
-        window.auth = auth;
-        window.appId = appId;
-    </script>
-
     <style>
         :root {
             --slate-blue: #2C3E50;
@@ -172,8 +139,8 @@
             <span class="step-tag">Profil 1/4</span>
             <h2>Quel est votre sexe biologique ?</h2>
             <div class="options-list">
-                <div class="opt-btn" onclick="handleSelect('sexe', 'Homme', this)">♂️ Homme</div>
-                <div class="opt-btn" onclick="handleSelect('sexe', 'Femme', this)">♀️ Femme</div>
+                <div class="opt-btn" data-key="sexe" data-val="Homme">♂️ Homme</div>
+                <div class="opt-btn" data-key="sexe" data-val="Femme">♀️ Femme</div>
             </div>
         </div>
 
@@ -182,7 +149,7 @@
             <span class="step-tag">Profil 1/4</span>
             <h2>Quel est votre poids actuel ?</h2>
             <div class="input-container">
-                <input type="number" id="poids" placeholder="00" oninput="validate()">
+                <input type="number" id="poids" placeholder="00">
                 <div style="font-weight:900; margin-top:10px; color:var(--burnt-orange)">KG</div>
             </div>
         </div>
@@ -192,9 +159,9 @@
             <span class="step-tag">Alimentation 2/4</span>
             <h2>Votre régime alimentaire ?</h2>
             <div class="options-list">
-                <div class="opt-btn" onclick="handleSelect('regime', 'Omnivore', this)">🥩 Omnivore</div>
-                <div class="opt-btn" onclick="handleSelect('regime', 'Végétarien', this)">🥗 Végétarien</div>
-                <div class="opt-btn" onclick="handleSelect('regime', 'Vegan', this)">🌱 Végétalien</div>
+                <div class="opt-btn" data-key="regime" data-val="Omnivore">🥩 Omnivore</div>
+                <div class="opt-btn" data-key="regime" data-val="Végétarien">🥗 Végétarien</div>
+                <div class="opt-btn" data-key="regime" data-val="Vegan">🌱 Végétalien</div>
             </div>
         </div>
 
@@ -203,9 +170,9 @@
             <span class="step-tag">Alimentation 2/4</span>
             <h2>Consommation de caféine ?</h2>
             <div class="options-list">
-                <div class="opt-btn" onclick="handleSelect('cafe', 'Aucune', this)">☕ Pas de caféine</div>
-                <div class="opt-btn" onclick="handleSelect('cafe', '1-2 tasses', this)">☕ 1 à 2 tasses / jour</div>
-                <div class="opt-btn" onclick="handleSelect('cafe', '3+ tasses', this)">☕ 3 tasses ou plus</div>
+                <div class="opt-btn" data-key="cafe" data-val="Aucune">☕ Pas de caféine</div>
+                <div class="opt-btn" data-key="cafe" data-val="1-2 tasses">☕ 1 à 2 tasses / jour</div>
+                <div class="opt-btn" data-key="cafe" data-val="3+ tasses">☕ 3 tasses ou plus</div>
             </div>
         </div>
 
@@ -214,7 +181,7 @@
             <span class="step-tag">Effort 3/4</span>
             <h2>Volume hebdomadaire ?</h2>
             <div class="input-container">
-                <input type="number" id="volume" placeholder="00" oninput="validate()">
+                <input type="number" id="volume" placeholder="00">
                 <div style="font-weight:900; margin-top:10px; color:var(--burnt-orange)">KM / SEMAINE</div>
             </div>
         </div>
@@ -224,8 +191,8 @@
             <span class="step-tag">Effort 3/4</span>
             <h2>Séance VMA / Intensité ?</h2>
             <div class="options-list">
-                <div class="opt-btn" onclick="handleSelect('vma', 'Oui', this)">✅ Oui, au moins une</div>
-                <div class="opt-btn" onclick="handleSelect('vma', 'Non', this)">❌ Non</div>
+                <div class="opt-btn" data-key="vma" data-val="Oui">✅ Oui, au moins une</div>
+                <div class="opt-btn" data-key="vma" data-val="Non">❌ Non</div>
             </div>
         </div>
 
@@ -234,9 +201,9 @@
             <span class="step-tag">Effort 3/4</span>
             <h2>Dénivelé positif (D+) / sem</h2>
             <div class="options-list">
-                <div class="opt-btn" onclick="handleSelect('dplus', 'Faible (<200m)', this)">📉 Faible</div>
-                <div class="opt-btn" onclick="handleSelect('dplus', 'Modéré (200-800m)', this)">🏔️ Modéré</div>
-                <div class="opt-btn" onclick="handleSelect('dplus', 'Élevé (>800m)', this)">⛰️ Élevé</div>
+                <div class="opt-btn" data-key="dplus" data-val="Faible (<200m)">📉 Faible</div>
+                <div class="opt-btn" data-key="dplus" data-val="Modéré (200-800m)">🏔️ Modéré</div>
+                <div class="opt-btn" data-key="dplus" data-val="Élevé (>800m)">⛰️ Élevé</div>
             </div>
         </div>
 
@@ -245,11 +212,11 @@
             <span class="step-tag">Signaux 4/4</span>
             <h2>Ressentez-vous ces signes ?</h2>
             <div class="check-list">
-                <label class="check-item"><input type="checkbox" name="sym" value="Fatigue" onchange="updateCheck(this)"> Fatigue / Somnolence</label>
-                <label class="check-item"><input type="checkbox" name="sym" value="Crampes" onchange="updateCheck(this)"> Crampes / Tressautements</label>
-                <label class="check-item"><input type="checkbox" name="sym" value="Articulations" onchange="updateCheck(this)"> Douleurs Articulations</label>
-                <label class="check-item"><input type="checkbox" name="sym" value="Digestion" onchange="updateCheck(this)"> Troubles digestifs</label>
-                <label class="check-item"><input type="checkbox" name="sym" value="Aucun" onchange="updateCheck(this)"> Aucun signal</label>
+                <label class="check-item"><input type="checkbox" name="sym" value="Fatigue"> Fatigue / Somnolence</label>
+                <label class="check-item"><input type="checkbox" name="sym" value="Crampes"> Crampes / Tressautements</label>
+                <label class="check-item"><input type="checkbox" name="sym" value="Articulations"> Douleurs Articulations</label>
+                <label class="check-item"><input type="checkbox" name="sym" value="Digestion"> Troubles digestifs</label>
+                <label class="check-item"><input type="checkbox" name="sym" value="Aucun"> Aucun signal</label>
             </div>
         </div>
 
@@ -258,50 +225,63 @@
             <span class="step-tag">Objectif 4/4</span>
             <h2>Votre priorité ?</h2>
             <div class="options-list">
-                <div class="opt-btn" onclick="handleSelect('obj', 'Performance', this)">⚡ Performance</div>
-                <div class="opt-btn" onclick="handleSelect('obj', 'Endurance', this)">🏃 Endurance</div>
-                <div class="opt-btn" onclick="handleSelect('obj', 'Récupération', this)">🧘 Récupération</div>
-                <div class="opt-btn" onclick="handleSelect('obj', 'Santé', this)">🛡️ Santé</div>
+                <div class="opt-btn" data-key="obj" data-val="Performance">⚡ Performance</div>
+                <div class="opt-btn" data-key="obj" data-val="Endurance">🏃 Endurance</div>
+                <div class="opt-btn" data-key="obj" data-val="Récupération">🧘 Récupération</div>
+                <div class="opt-btn" data-key="obj" data-val="Santé">🛡️ Santé</div>
             </div>
         </div>
 
-        <!-- 10. WHATSAPP (CAPTURE DATA) -->
+        <!-- 10. WHATSAPP -->
         <div class="step" id="s10">
             <span class="step-tag">Finalisation</span>
             <h2>Votre numéro WhatsApp ?</h2>
             <span class="helper">Pour recevoir votre analyse et accéder à la Meute.</span>
             <div class="input-container">
-                <input type="tel" id="whatsapp" placeholder="06 00 00 00 00" oninput="validate()">
+                <input type="tel" id="whatsapp" placeholder="06 00 00 00 00">
             </div>
         </div>
 
         <div class="footer-nav">
-            <button type="button" class="btn btn-prev" id="prevBtn" style="display:none" onclick="nav(-1)">Retour</button>
-            <button type="button" class="btn btn-next" id="nextBtn" disabled onclick="nav(1)">Suivant</button>
-            <button type="button" class="btn btn-send" id="sendBtn" style="display:none" onclick="finish()">Finaliser ➔</button>
+            <button type="button" class="btn btn-prev" id="prevBtn" style="display:none">Retour</button>
+            <button type="button" class="btn btn-next" id="nextBtn" disabled>Suivant</button>
+            <button type="button" class="btn btn-send" id="sendBtn" style="display:none">Finaliser ➔</button>
         </div>
     </form>
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // 1. Initialisation
+    const firebaseConfig = JSON.parse(__firebase_config);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
     let step = 1;
     let store = {};
+    let isSubmitting = false;
 
-    function handleSelect(k, v, el) {
-        store[k] = v;
-        const siblings = el.parentElement.querySelectorAll('.opt-btn');
-        siblings.forEach(s => s.classList.remove('selected'));
-        el.classList.add('selected');
-        validate();
-        setTimeout(() => { if(step < 10) nav(1); }, 350);
-    }
+    // 2. Authentification (RULE 3)
+    const initAuth = async () => {
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (e) {
+            console.error("Auth error:", e);
+        }
+    };
+    initAuth();
 
-    function updateCheck(input) {
-        input.parentElement.classList.toggle('active', input.checked);
-        validate();
-    }
-
-    function validate() {
+    // 3. Gestion Formulaire
+    const validate = () => {
         let ok = false;
         if(step==1) ok = !!store.sexe;
         if(step==2) ok = document.getElementById('poids').value > 30;
@@ -314,11 +294,11 @@
         if(step==9) ok = !!store.obj;
         if(step==10) ok = document.getElementById('whatsapp').value.length >= 8;
 
-        document.getElementById('nextBtn').disabled = !ok;
-        document.getElementById('sendBtn').disabled = !ok;
-    }
+        document.getElementById('nextBtn').disabled = !ok || isSubmitting;
+        document.getElementById('sendBtn').disabled = !ok || isSubmitting;
+    };
 
-    function nav(n) {
+    const nav = (n) => {
         document.getElementById('s'+step).classList.remove('active');
         step += n;
         document.getElementById('s'+step).classList.add('active');
@@ -327,30 +307,15 @@
         document.getElementById('nextBtn').style.display = (step < 10) ? 'block' : 'none';
         document.getElementById('sendBtn').style.display = (step == 10) ? 'block' : 'none';
         validate();
-    }
+    };
 
-    async function finish() {
+    const finish = async () => {
+        if (isSubmitting) return;
+        isSubmitting = true;
+        
         const btn = document.getElementById('sendBtn');
-        btn.disabled = true;
         btn.innerText = "Envoi...";
-
-        const db = window.db;
-        const auth = window.auth;
-        const appId = window.appId;
-
-        // Sécurité : S'assurer que l'utilisateur est authentifié avant d'envoyer (RULE 3)
-        if (!auth.currentUser) {
-            try {
-                const { signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-                await signInAnonymously(auth);
-            } catch (e) {
-                console.error("Échec auth finale:", e);
-                alert("Erreur de connexion sécurisée. Veuillez réessayer.");
-                btn.disabled = false;
-                btn.innerText = "Finaliser ➔";
-                return;
-            }
-        }
+        validate();
 
         const syms = [];
         document.querySelectorAll('input[name="sym"]:checked').forEach(c => syms.push(c.value));
@@ -367,29 +332,56 @@
             symptomes: syms,
             objectif: store.obj,
             whatsapp: phone,
-            timestamp: new Date() // Fallback si serverTimestamp() n'est pas prêt
+            timestamp: serverTimestamp()
         };
 
         try {
-            const { collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-            
-            // Mise à jour du timestamp avec la fonction Firestore
-            payload.timestamp = serverTimestamp();
+            // S'assurer d'être auth avant d'écrire
+            if (!auth.currentUser) await signInAnonymously(auth);
 
-            // Enregistrement effectif (RULE 1)
+            // Enregistrement (RULE 1)
             await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), payload);
 
-            // Redirection finale vers WhatsApp
+            // Redirection
             const msg = `BILAN BIO-PERFORMANCE\n---\nSexe: ${payload.sexe}\nPoids: ${payload.poids}kg\nVolume: ${payload.volume}km/sem\nObjectif: ${payload.objectif}\n---\nMerci de me transmettre mon analyse !`;
             window.location.href = `https://wa.me/33651452360?text=${encodeURIComponent(msg)}`;
             
         } catch (e) {
-            console.error("Erreur Firestore lors de l'envoi:", e);
-            alert("Erreur de sauvegarde. Vérifiez votre connexion internet.");
-            btn.disabled = false;
+            console.error("Firestore Error:", e);
+            alert("Erreur lors de l'envoi. Vérifiez votre connexion.");
+            isSubmitting = false;
             btn.innerText = "Finaliser ➔";
+            validate();
         }
-    }
+    };
+
+    // 4. Listeners
+    document.querySelectorAll('.opt-btn').forEach(btn => {
+        btn.onclick = () => {
+            const key = btn.dataset.key;
+            store[key] = btn.dataset.val;
+            btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            validate();
+            if(step < 10) setTimeout(() => nav(1), 350);
+        };
+    });
+
+    document.querySelectorAll('input[name="sym"]').forEach(input => {
+        input.onchange = () => {
+            input.parentElement.classList.toggle('active', input.checked);
+            validate();
+        };
+    });
+
+    document.getElementById('poids').oninput = validate;
+    document.getElementById('volume').oninput = validate;
+    document.getElementById('whatsapp').oninput = validate;
+
+    document.getElementById('prevBtn').onclick = () => nav(-1);
+    document.getElementById('nextBtn').onclick = () => nav(1);
+    document.getElementById('sendBtn').onclick = finish;
+
 </script>
 
 </body>
