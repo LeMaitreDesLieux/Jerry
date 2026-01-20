@@ -12,23 +12,30 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Configuration injectée par l'environnement
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // Auth
+        // Authentification initiale (RULE 3)
         const initAuth = async () => {
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-          } else {
-            await signInAnonymously(auth);
+          try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+              await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+              await signInAnonymously(auth);
+            }
+          } catch (e) {
+            console.error("Échec de l'authentification:", e);
           }
         };
         initAuth();
 
+        // On expose les services pour les fonctions globales
         window.db = db;
+        window.auth = auth;
         window.appId = appId;
     </script>
 
@@ -81,7 +88,7 @@
         }
 
         .step { display: none; flex-direction: column; flex-grow: 1; }
-        .step.active { display: flex; animation: slideIn 0.4s ease-out; }
+        .step.active { display: flex; flex-direction: column; animation: slideIn 0.4s ease-out; }
 
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(15px); }
@@ -325,7 +332,25 @@
     async function finish() {
         const btn = document.getElementById('sendBtn');
         btn.disabled = true;
-        btn.innerText = "Enregistrement...";
+        btn.innerText = "Envoi...";
+
+        const db = window.db;
+        const auth = window.auth;
+        const appId = window.appId;
+
+        // Sécurité : S'assurer que l'utilisateur est authentifié avant d'envoyer (RULE 3)
+        if (!auth.currentUser) {
+            try {
+                const { signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                await signInAnonymously(auth);
+            } catch (e) {
+                console.error("Échec auth finale:", e);
+                alert("Erreur de connexion sécurisée. Veuillez réessayer.");
+                btn.disabled = false;
+                btn.innerText = "Finaliser ➔";
+                return;
+            }
+        }
 
         const syms = [];
         document.querySelectorAll('input[name="sym"]:checked').forEach(c => syms.push(c.value));
@@ -342,26 +367,27 @@
             symptomes: syms,
             objectif: store.obj,
             whatsapp: phone,
-            timestamp: serverTimestamp()
+            timestamp: new Date() // Fallback si serverTimestamp() n'est pas prêt
         };
 
         try {
-            // Sauvegarde dans ta base de données Cloud Jerry
-            const { getFirestore, collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-            const db = window.db;
-            const appId = window.appId;
+            const { collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
             
-            if (db) {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), payload);
-            }
+            // Mise à jour du timestamp avec la fonction Firestore
+            payload.timestamp = serverTimestamp();
 
-            // Redirection WhatsApp pour le contact humain
+            // Enregistrement effectif (RULE 1)
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'leads'), payload);
+
+            // Redirection finale vers WhatsApp
             const msg = `BILAN BIO-PERFORMANCE\n---\nSexe: ${payload.sexe}\nPoids: ${payload.poids}kg\nVolume: ${payload.volume}km/sem\nObjectif: ${payload.objectif}\n---\nMerci de me transmettre mon analyse !`;
             window.location.href = `https://wa.me/33651452360?text=${encodeURIComponent(msg)}`;
             
         } catch (e) {
-            console.error(e);
-            alert("Une erreur est survenue, mais vous pouvez toujours nous contacter sur WhatsApp.");
+            console.error("Erreur Firestore lors de l'envoi:", e);
+            alert("Erreur de sauvegarde. Vérifiez votre connexion internet.");
+            btn.disabled = false;
+            btn.innerText = "Finaliser ➔";
         }
     }
 </script>
