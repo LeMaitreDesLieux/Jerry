@@ -84,33 +84,6 @@
         .logo-main span.brand-end { color: var(--burnt-orange); }
         .logo-sub { font-size: 0.75rem; font-weight: 800; color: var(--slate-blue); letter-spacing: 6px; text-transform: uppercase; margin-top: 8px; }
 
-        .top-nav {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .btn-top-blog {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 24px;
-            background: rgba(44, 62, 80, 0.05);
-            border: 1px solid rgba(44, 62, 80, 0.1);
-            color: var(--slate-blue);
-            text-decoration: none;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            transition: var(--transition);
-        }
-
-        .btn-top-blog:hover {
-            background: var(--white);
-            border-color: var(--slate-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.05);
-        }
-
         .container {
             max-width: 550px;
             margin: 0 auto;
@@ -213,7 +186,12 @@
 
         .btn-whatsapp { background: var(--whatsapp-green); color: var(--white); }
         .btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); }
-        .btn-blog { background: var(--slate-blue); color: var(--white); }
+        
+        .btn-guide { background: var(--burnt-orange); color: var(--white); }
+        .btn-guide:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(211, 84, 0, 0.2); }
+
+        .btn-diag { background: var(--slate-blue); color: var(--white); }
+        .btn-diag:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(44, 62, 80, 0.2); }
 
         footer { text-align: center; padding: 40px 0; font-size: 0.8rem; font-weight: 700; opacity: 0.5; letter-spacing: 2px; }
 
@@ -235,11 +213,7 @@
         <div class="logo-sub">MAROC ENDURANT</div>
     </header>
 
-    <div class="top-nav animate">
-        <a href="/blog" class="btn-top-blog">Explorez le Blog Jerry ➔</a>
-    </div>
-
-    <div class="container animate">
+    <div class="container animate" style="margin-top: 20px;">
         <div class="video-wrapper">
             <div class="video-thumb"><div class="play-btn"></div></div>
         </div>
@@ -256,10 +230,20 @@
                 <div class="feature-item"><div class="icon-box">⏱️</div><span>Le Raccourci : Gagnez du temps sur vos perfs.</span></div>
             </div>
 
+            <!-- BOUTON 1 : WhatsApp -->
             <a href="https://wa.me/33651452360?text=bonjour%0Aj'aimerais%20rejoindre%20la%20meute%0Aet%20obtenir%20le%20Guide%0AMerci%20!" target="_blank" class="btn btn-whatsapp">
                 Accès Immédiat (WhatsApp)
             </a>
-            <a href="diagnostic.html" class="btn btn-blog">Diagnostic de Performance</a>
+
+            <!-- BOUTON 2 : Bilan Bio-Performance -->
+            <a href="diagnostic.html" class="btn btn-diag">
+                Bilan Bio-Performance
+            </a>
+
+            <!-- BOUTON 3 : Guide PDF -->
+            <a href="assets/guide_meute.pdf" class="btn btn-guide">
+                Obtenir le Guide (PDF)
+            </a>
         </div>
 
         <footer>JERRY.ma • +33 6 51 45 23 60</footer>
